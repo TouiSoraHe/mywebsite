@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>模板</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        body{
+            padding-top: 70px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="container-fluid" style="padding-right: 0px;padding-left: 0px">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">首页</a>
+            </div>
+            <div class="collapse navbar-collapse navbar-right" id="navbar-collapse" style="margin-right: 0px;padding-right: 0px">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown" sec:authorize="isAuthenticated()">
+                        <a href="/Blog" class="dropdown-toggle" data-toggle="dropdown">
+                            博客
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Blog">博客首页</a></li>
+                            <li><a href="/Blog/AddBlog">新建博客</a></li>
+                        </ul>
+                    </li>
+                    <li sec:authorize="isAnonymous()">
+                        <a href="/Blog">博客</a>
+                    </li>
+                    <li>
+                        <a href="#">聊天室</a>
+                    </li>
+                    <li>
+                        <a href="#">工具箱</a>
+                    </li>
+                    <li>
+                        <a href="">留言板</a>
+                    </li>
+                    <li>
+                        <a href="">关于我</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <div class="col-xs-7">
+            </div>
+            <div class="col-xs-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 错误模态框（Modal） -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    服务器开了一点小差
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div id="errorContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/js/MyJs.js"></script>
+<script>
+
+
+</script>
+
+</body>
+</html>
