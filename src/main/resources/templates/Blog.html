@@ -23,21 +23,27 @@
             padding-top: 70px;
         }
 
-        .MySidebar{
-            top: 70px;
-            bottom:0;
-            position:fixed;
-            overflow-y:scroll;
-            overflow-x:hidden;
-            -ms-overflow-style:none;
-            overflow:-moz-scrollbars-none;
+        @media screen and (max-width: 767px) { /*当屏幕尺寸小于767px时，应用下面的CSS样式*/
+            .MySidebar {
+            }
         }
 
-        .MySidebar::-webkit-scrollbar
-        {
-            width:0px
-        }
+        @media only screen and (min-width: 767px) {
+            .MySidebar {
+                top: 70px;
+                bottom:0;
+                position:fixed;
+                overflow-y:scroll;
+                overflow-x:hidden;
+                -ms-overflow-style:none;
+                overflow:-moz-scrollbars-none;
+            }
 
+            .MySidebar::-webkit-scrollbar
+            {
+                width:0px
+            }
+        }
 
     </style>
 </head>
@@ -94,7 +100,7 @@
 <div class="main">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-2 MySidebar">
+            <div class="col-md-2 MySidebar">
                 <div class="panel-group" id="accordion" th:each="year:${articleInfoMap.keySet()}">
                     <!--年,添加年份-->
                     <div class="panel panel-default">
@@ -136,8 +142,7 @@
 
                 </div>
             </div>
-            <div class="col-xs-2"></div>
-            <div class="col-xs-7">
+            <div class="col-md-7 col-md-offset-2">
                 <div class="MyArticleArea">
                     <div class="MyTitle">
                         <h2 class="text-center">
@@ -154,14 +159,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-1"></div>
-            <div class="col-xs-1">
+            <div class="col-md-1 col-md-offset-1">
                 <div class="btn-group-vertical ChangeBtnGroup" sec:authorize="isAuthenticated()">
                     <button type="button" class="btn btn-default" th:if="${article}" th:onclick="'OnChange('+${article.getId()}+')'">修改博客</button>
                     <button type="button" class="btn btn-default" th:if="${article}" th:onclick="'OnDelete('+${article.getId()}+')'">删除博客</button>
                 </div>
-            </div>
-            <div class="col-xs-1">
             </div>
         </div>
     </div>
