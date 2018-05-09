@@ -23,12 +23,8 @@
             padding-top: 70px;
         }
 
-        .toolbar {
-            border: 1px solid #ccc;
-        }
-        .text {
-            border: 1px solid #ccc;
-            height: 700px;
+        .w-e-text-container{
+            height: 600px !important;
         }
     </style>
 </head>
@@ -85,13 +81,12 @@
 <div class="main">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-3"></div>
-            <div class="col-xs-6">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
                 <div class="MyArticleArea">
-                    <input type="text" id="titleInput" class="form-control input-lg-12" placeholder="标题...">
+                    <input type="text" id="titleInput" class="form-control input-lg-6" placeholder="标题...">
                     <br>
-                    <div id="contenttoolbar" class="toolbar"></div>
-                    <div id="contenttext" class="text"></div>
+                    <div id="contentEditor"></div>
                 </div>
                 <div><br></div>
                 <div class="btn-group">
@@ -100,7 +95,7 @@
                     <button type="button" class="btn btn-default" onclick="OnReset()">清空</button>
                 </div>
             </div>
-            <div class="col-xs-3">
+            <div class="col-md-3">
             </div>
         </div>
     </div>
@@ -142,7 +137,7 @@
 <script src="/js/MyJs.js"></script>
 <script>
     var E = window.wangEditor;
-    var content = new E('#contenttoolbar',"#contenttext");
+    var content = new E('#contentEditor');
     content.customConfig.uploadImgShowBase64 = true ;
     content.customConfig.zIndex = 0;
     content.create();
