@@ -23,12 +23,14 @@
             padding-top: 70px;
         }
 
-        @media screen and (max-width: 767px) { /*当屏幕尺寸小于767px时，应用下面的CSS样式*/
+        /*当屏幕尺寸小于992px(col-md-xs>=992)时，取消侧边栏的固定,让其自动浮动到顶部*/
+        @media screen and (max-width: 991px) {
             .MySidebar {
             }
         }
 
-        @media only screen and (min-width: 767px) {
+        /*当屏幕尺寸>=992px(col-md-xs>=992)时，将侧边栏固定到左侧,并且不允许跟随页面滚动*/
+        @media only screen and (min-width: 992px) {
             .MySidebar {
                 top: 70px;
                 bottom:0;
