@@ -1,4 +1,4 @@
-package cn.zzy.mywebsite.Controller;
+package cn.zzy.mywebsite.Controller.TeamplatePageController;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
