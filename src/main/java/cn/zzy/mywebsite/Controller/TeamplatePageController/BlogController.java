@@ -5,6 +5,7 @@ import cn.zzy.mywebsite.Data.Entity.ArticleInfo;
 import cn.zzy.mywebsite.Data.Mapper.ArticleInfoMapper;
 import cn.zzy.mywebsite.Data.Mapper.ArticleMapper;
 import cn.zzy.mywebsite.Data.ResponseJson;
+import cn.zzy.mywebsite.Exception.AssetNotFoundException;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,22 +37,26 @@ public class BlogController {
 
     @RequestMapping(value = "/{ArticleID}",method = RequestMethod.POST)
     @ResponseBody()
-    public ResponseJson GetArticle(@PathVariable("ArticleID")int articleID)
+    public ResponseJson GetArticle(@PathVariable("ArticleID")Integer articleID)
     {
+        if(articleID == null)
+        {
+            throw new IllegalArgumentException("ArticleID不能为空");
+        }
         Article article = articleMapper.Find(articleID);
-        ResponseJson responseJson = null;
         if(article == null){
-            responseJson = new ResponseJson("404","没有找到该博客",null);
+            throw new AssetNotFoundException("没有找到该博客");
         }
-        else{
-            responseJson = new ResponseJson("200","success",article);
-        }
-        return responseJson;
+        return ResponseJson.CreateSuccess(article);
     }
 
     @RequestMapping(value = "/{ArticleID}",method = RequestMethod.GET)
-    public String GetArticle(@PathVariable("ArticleID")int articleID, Model model)
+    public String GetArticle(@PathVariable("ArticleID")Integer articleID, Model model)
     {
+        if(articleID == null)
+        {
+            throw new IllegalArgumentException("ArticleID不能为空");
+        }
         model.addAttribute("articleInfoMap",GetArticleMap(articleInfoMapper.FindAll()));
         model.addAttribute("article",articleMapper.Find(articleID));
         return "Blog";
@@ -69,21 +74,28 @@ public class BlogController {
     @PreAuthorize("isAuthenticated()")
     public ResponseJson AddArticle(String title,String content)
     {
+        if(title==null || "".equals(title))
+        {
+            throw new IllegalArgumentException("博客标题不能为空");
+        }
         ArticleInfo articleInfo = new ArticleInfo(title,new Date(),0);
         articleInfoMapper.Add(articleInfo);
         Article article = new Article(title,new Date(),content,articleInfo.getId());
         articleMapper.Add(article);
         articleInfo.setArticleID(article.getId());
         articleInfoMapper.Update(articleInfo);
-        ResponseJson responseJson = new ResponseJson("200","success",String.valueOf(article.getId()));
-        return responseJson;
+        return ResponseJson.CreateSuccess(String.valueOf(article.getId()));
     }
 
 
     @RequestMapping(value = "/Delete/{ArticleID}",method = RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
-    public String DeleteArticle(@PathVariable("ArticleID")int articleID,Model model)
+    public String DeleteArticle(@PathVariable("ArticleID")Integer articleID,Model model)
     {
+        if (articleID==null)
+        {
+            throw new IllegalArgumentException("ArticleID不能为空");
+        }
         articleMapper.Delete(articleID);
         articleInfoMapper.Delete(articleID);
         return BlogPage(model);
@@ -91,19 +103,30 @@ public class BlogController {
 
     @RequestMapping(value = "/Update/{ArticleID}",method = RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
-    public String UpdateArticle(@PathVariable("ArticleID")int articleID,Model model)
+    public String UpdateArticle(@PathVariable("ArticleID")Integer articleID,Model model)
     {
+        if (articleID == null)
+        {
+            throw new IllegalArgumentException("ArticleID不能为空");
+        }
         Article article = articleMapper.Find(articleID);
         model.addAttribute("article",article);
-        System.out.println(article==null);
         return "UpdateBlog";
     }
 
     @RequestMapping(value = "/Update",method = RequestMethod.POST)
     @ResponseBody()
     @PreAuthorize("isAuthenticated()")
-    public ResponseJson UpdateArticle(String title,String content,int articleID)
+    public ResponseJson UpdateArticle(String title,String content,Integer articleID)
     {
+        if (articleID == null)
+        {
+            throw new IllegalArgumentException("ArticleID不能为空");
+        }
+        if(title==null || "".equals(title))
+        {
+            throw new IllegalArgumentException("博客标题不能为空");
+        }
         Article article = articleMapper.Find(articleID);
         article.setTitle(title);
         article.setContent(content);
@@ -111,8 +134,7 @@ public class BlogController {
         ArticleInfo articleInfo = articleInfoMapper.Find(article.getArticleInfoID());
         articleInfo.setTitle(title);
         articleInfoMapper.Update(articleInfo);
-        ResponseJson responseJson = new ResponseJson("200","success",String.valueOf(article.getId()));
-        return responseJson;
+        return ResponseJson.CreateSuccess(String.valueOf(article.getId()));
     }
 
     private HashMap<Integer,HashMap<Integer,List<ArticleInfo>>> GetArticleMap(List<ArticleInfo> articles)

@@ -43,4 +43,14 @@ public class ResponseJson {
                 ", data=" + data +
                 '}';
     }
+
+    public static ResponseJson CreateError(String errorCode,String errorMessage)
+    {
+        return new ResponseJson(errorCode,errorMessage,null);
+    }
+
+    public static ResponseJson CreateSuccess(Object data)
+    {
+        return new ResponseJson("200","success",data);
+    }
 }
