@@ -133,7 +133,7 @@
                                         <div class="panel-body">
                                             <ul class="list-unstyled" th:each="articleInfo:${articleInfoMap.get(year).get(month)}">
                                                 <!--添加博客列表条目-->
-                                                <li><a th:href="'javascript:void(0); onclick=GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}">第一条博客</a></li>
+                                                <li><a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}">第一条博客</a></li>
                                             </ul>
                                         </div>
                                     </div>
