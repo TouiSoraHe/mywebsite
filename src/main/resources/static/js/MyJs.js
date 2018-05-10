@@ -12,37 +12,49 @@ function FormatDateTime(time, regex) {
         .replace("hh",h>12?h%12:h).replace("HH",h).replace("mm",m).replace("ss",s).replace("mi",mi);
 };
 
+NProgress.configure({ minimum: 0.4 });
+
 function RequestAsyn(url,method,successEvent,errorContent,errorModal,form) {
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if(request.readyState === 4) {
-            if(request.status === 200){
-                var text = request.responseText;
-                if(text==null || text == "") {
-                    fail(-1,null,errorContent,errorModal);
-                    return;
-                }
-                else{
-                    var item = $.parseJSON(text);
-                    if(item.code!=200){
-                        fail(item.code,item.message,errorContent,errorModal);
-                        return;
-                    }
-                }
-                successEvent(item.data);
+    NProgress.done();
+    NProgress.start();
+    $.ajax({
+        url:url,
+        dataType:"json",
+        type:method,
+        success:function (data) {
+            if(data.code!=200){
+                fail(data.code,data.message,errorContent,errorModal);
             }
-            else {
-                fail(request.status,null,errorContent,errorModal);
+            else
+            {
+                successEvent(data.data);
             }
+        },
+        error:function (jqXHR, textStatus) {fail(jqXHR.status,textStatus,errorContent,errorModal);},
+        data:GetKeyAndValue(form),
+        complete:function () {
+            NProgress.done();
         }
+    });
+}
+
+function GetKeyAndValue(m) {
+    if(m==null)
+    {
+        return "";
     }
-    request.open(method,url);
-    if(form!=null && form instanceof FormData) {
-        request.send(form);
+    var ret = "";
+    var count = 0;
+    for(var item of m.entries())
+    {
+        if(count!=0)
+        {
+            ret+="&";
+        }
+        ret+=(item[0]+"="+item[1]);
+        count++;
     }
-    else {
-        request.send();
-    }
+    return ret;
 }
 
 function fail(code,message,errorContent,errorModal) {
