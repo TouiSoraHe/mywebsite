@@ -21,6 +21,8 @@ function RequestAsyn(url,method,successEvent,errorContent,errorModal,form) {
         url:url,
         dataType:"json",
         type:method,
+        processData:false,
+        contentType: false,
         success:function (data) {
             if(data.code!=200){
                 fail(data.code,data.message,errorContent,errorModal);
@@ -31,30 +33,11 @@ function RequestAsyn(url,method,successEvent,errorContent,errorModal,form) {
             }
         },
         error:function (jqXHR, textStatus) {fail(jqXHR.status,textStatus,errorContent,errorModal);},
-        data:GetKeyAndValue(form),
+        data:form,
         complete:function () {
             NProgress.done();
         }
     });
-}
-
-function GetKeyAndValue(m) {
-    if(m==null)
-    {
-        return "";
-    }
-    var ret = "";
-    var count = 0;
-    for(var item of m.entries())
-    {
-        if(count!=0)
-        {
-            ret+="&";
-        }
-        ret+=(item[0]+"="+item[1]);
-        count++;
-    }
-    return ret;
 }
 
 function fail(code,message,errorContent,errorModal) {
