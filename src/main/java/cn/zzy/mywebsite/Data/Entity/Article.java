@@ -16,26 +16,34 @@ public class Article {
 
     private int articleInfoID;
 
+    private String tag;//标签,格式为:生活|科技
+
     public Article() {
     }
 
-    public Article(String title, Date time, String content, int articleInfoID) {
+    public Article(String title, Date time, String content, int articleInfoID, String tag) {
         this.title = title;
         this.time = time;
         this.content = content;
         this.articleInfoID = articleInfoID;
+        this.tag = tag;
     }
 
-    public Article(int id, String title, Date time, String content, int articleInfoID) {
+    public Article(int id, String title, Date time, String content, int articleInfoID, String tag) {
         this.id = id;
         this.title = title;
         this.time = time;
         this.content = content;
         this.articleInfoID = articleInfoID;
+        this.tag = tag;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -74,6 +82,14 @@ public class Article {
         this.articleInfoID = articleInfoID;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -92,8 +108,11 @@ public class Article {
     public String toString() {
         return "Article{" +
                 "id=" + id +
+                ", title='" + title + '\'' +
                 ", time=" + time +
                 ", content='" + content + '\'' +
+                ", articleInfoID=" + articleInfoID +
+                ", tag='" + tag + '\'' +
                 '}';
     }
 }

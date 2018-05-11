@@ -14,17 +14,31 @@ public class ArticleInfo {
 
     private int articleID;
 
+    private String tag;//标签,格式为:生活|科技
+
     public ArticleInfo() {
     }
 
-    public ArticleInfo(String title, Date time, int articleID) {
+    public ArticleInfo(String title, Date time, int articleID, String tag) {
         this.title = title;
         this.time = time;
         this.articleID = articleID;
+        this.tag = tag;
+    }
+
+    public ArticleInfo(Article article) {
+        this.title = article.getTitle();
+        this.time = article.getTime();
+        this.articleID = article.getId();
+        this.tag = article.getTag();
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -55,6 +69,14 @@ public class ArticleInfo {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(getTime());
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     @Override
     public String toString() {
         return "ArticleInfo{" +
@@ -62,6 +84,7 @@ public class ArticleInfo {
                 ", title='" + title + '\'' +
                 ", time=" + time +
                 ", articleID=" + articleID +
+                ", tag='" + tag + '\'' +
                 '}';
     }
 

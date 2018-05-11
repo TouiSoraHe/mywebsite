@@ -6,7 +6,6 @@ import cn.zzy.mywebsite.Data.Mapper.ArticleInfoMapper;
 import cn.zzy.mywebsite.Data.Mapper.ArticleMapper;
 import cn.zzy.mywebsite.Data.ResponseJson;
 import cn.zzy.mywebsite.Exception.AssetNotFoundException;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -72,15 +71,20 @@ public class BlogController {
     @RequestMapping(value = "/AddBlog",method = RequestMethod.POST)
     @ResponseBody()
     @PreAuthorize("isAuthenticated()")
-    public ResponseJson AddArticle(String title,String content)
+    public ResponseJson AddArticle(Article article)
     {
-        if(title==null || "".equals(title))
+        if(article == null)
+        {
+            throw new IllegalArgumentException("参数Article为空");
+        }
+        else if(article.getTitle()==null || "".equals(article.getTitle()))
         {
             throw new IllegalArgumentException("博客标题不能为空");
         }
-        ArticleInfo articleInfo = new ArticleInfo(title,new Date(),0);
+        article.setTime(new Date());
+        ArticleInfo articleInfo = new ArticleInfo(article);
         articleInfoMapper.Add(articleInfo);
-        Article article = new Article(title,new Date(),content,articleInfo.getId());
+        article.setArticleInfoID(articleInfo.getId());
         articleMapper.Add(article);
         articleInfo.setArticleID(article.getId());
         articleInfoMapper.Update(articleInfo);
@@ -110,29 +114,39 @@ public class BlogController {
             throw new IllegalArgumentException("ArticleID不能为空");
         }
         Article article = articleMapper.Find(articleID);
-        model.addAttribute("article",article);
+        if(article!=null)
+        {
+            model.addAttribute("article",article);
+            model.addAttribute("tagList",GetTagList(article.getTag()));
+        }
         return "UpdateBlog";
     }
 
     @RequestMapping(value = "/Update",method = RequestMethod.POST)
     @ResponseBody()
     @PreAuthorize("isAuthenticated()")
-    public ResponseJson UpdateArticle(String title,String content,Integer articleID)
+    public ResponseJson UpdateArticle(Article article)
     {
-        if (articleID == null)
+        if(article==null)
         {
-            throw new IllegalArgumentException("ArticleID不能为空");
+            throw new IllegalArgumentException("参数Article为空");
         }
-        if(title==null || "".equals(title))
+        if(article.getTitle()==null || "".equals(article.getTitle()))
         {
             throw new IllegalArgumentException("博客标题不能为空");
         }
-        Article article = articleMapper.Find(articleID);
-        article.setTitle(title);
-        article.setContent(content);
-        articleMapper.Update(article);
-        ArticleInfo articleInfo = articleInfoMapper.Find(article.getArticleInfoID());
-        articleInfo.setTitle(title);
+        Article newArticle = articleMapper.Find(article.getId());
+        if(newArticle==null)
+        {
+            throw new AssetNotFoundException("没有找到该博客,articleID:"+article.getId());
+        }
+        newArticle.setTitle(article.getTitle());
+        newArticle.setContent(article.getContent());
+        newArticle.setTag(article.getTag());
+        articleMapper.Update(newArticle);
+        ArticleInfo articleInfo = articleInfoMapper.Find(newArticle.getArticleInfoID());
+        articleInfo.setTitle(article.getTitle());
+        articleInfo.setTag(article.getTag());
         articleInfoMapper.Update(articleInfo);
         return ResponseJson.CreateSuccess(String.valueOf(article.getId()));
     }
@@ -153,5 +167,18 @@ public class BlogController {
             articleMap.get(year).get(month).add(item);
         }
         return articleMap;
+    }
+
+    private List<String> GetTagList(String tagStr)
+    {
+        List<String> tagList = new ArrayList<>();
+        if(tagStr!=null && !"".equals(tagStr))
+        {
+            for (String item : tagStr.split("\\|"))
+            {
+                tagList.add(item);
+            }
+        }
+        return tagList;
     }
 }

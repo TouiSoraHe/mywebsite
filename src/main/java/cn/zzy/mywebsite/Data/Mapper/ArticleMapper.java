@@ -8,7 +8,7 @@ import java.util.List;
 public interface ArticleMapper extends IMapperHandle<Article>{
 
     @Override
-    @Insert("INSERT INTO article (title,content,time,articleInfoID) VALUES(#{title}, #{content},#{time},#{articleInfoID})")
+    @Insert("INSERT INTO article (title,content,time,articleInfoID,tag) VALUES(#{title}, #{content},#{time},#{articleInfoID},#{tag})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void Add(Article article);
 
@@ -17,7 +17,7 @@ public interface ArticleMapper extends IMapperHandle<Article>{
     void Delete(int id);
 
     @Override
-    @Update("UPDATE article SET title=#{title},content=#{content},time=#{time},articleInfoID=#{articleInfoID} WHERE id =#{id}")
+    @Update("UPDATE article SET title=#{title},content=#{content},time=#{time},articleInfoID=#{articleInfoID},tag=#{tag} WHERE id =#{id}")
     void Update(Article article);
 
     @Override

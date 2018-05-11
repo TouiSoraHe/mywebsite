@@ -15,12 +15,6 @@ import java.util.Date;
 @RequestMapping("/")
 public class IndexController {
 
-    @Autowired
-    ArticleMapper articleMapper;
-
-    @Autowired
-    ArticleInfoMapper articleInfoMapper;
-
     @RequestMapping(method = RequestMethod.GET)
     public String IndexPage()
     {

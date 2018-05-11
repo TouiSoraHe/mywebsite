@@ -27,6 +27,9 @@
             height: 600px !important;
         }
 
+        .TagList{
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -86,6 +89,16 @@
             <div class="col-lg-6">
                 <div class="MyArticleArea" th:if="${article}">
                     <input type="text" id="titleInput" class="form-control input-lg-6" placeholder="标题..." th:value="${article.getTitle()}">
+                    <br>
+                    <div class="ArticleTag">
+                        <span class="TagList">
+                            <span th:each="tag:${tagList}">
+                                <span th:text="${tag}" class="label label-info" onclick="RemoveTag(event)"></span>
+                                <span>&nbsp&nbsp</span>
+                            </span>
+                        </span>
+                        <button type="button" class="btn btn-default" onclick="AddTag()">+</button>
+                    </div>
                     <br>
                     <div id="contentEditor">
                         <div class="MyContent" th:utext="${article.getContent()}"></div>
@@ -167,10 +180,22 @@
             alert("内容不能为空");
             return;
         }
+        var tag = "";
+        var count = 0;
+        for(var item of $(".TagList").children())
+        {
+            if(count!=0)
+            {
+                tag+="|";
+            }
+            tag += $(item).children(".label").text();
+            count++;
+        }
         var form = new FormData();
         form.append("title",titleText);
         form.append("content",contentText);
-        form.append("articleID",articleID);
+        form.append("id",articleID);
+        form.append("tag",tag);
         RequestAsyn("/Blog/Update",'POST',success,$("#errorContent"),$("#errorModal"),form);
     }
 
@@ -182,6 +207,16 @@
         content.txt.clear();
     }
 
+    function AddTag() {
+        var tag = prompt("请输入需要添加的标签:");
+        $(".TagList").append(
+            "<span><span class='label label-info'>"+tag+"</span><span>&nbsp&nbsp</span></span>"
+        ).click(RemoveTag);
+    }
+
+    function RemoveTag(e) {
+        $(e.target).parent().remove();
+    }
 
 </script>
 
