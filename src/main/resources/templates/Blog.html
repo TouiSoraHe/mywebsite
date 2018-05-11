@@ -104,9 +104,9 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2 MySidebar">
-                <div class="panel-group" id="accordion" th:each="year:${articleInfoMap.keySet()}">
+                <div class="panel-group" id="accordion">
                     <!--年,添加年份-->
-                    <div class="panel panel-default">
+                    <div class="panel panel-default" th:each="year:${articleInfoMap.keySet()}">
                         <!--年份的标题-->
                         <div class="panel-heading">
                             <h4 class="panel-title">
@@ -117,13 +117,13 @@
                         </div>
                         <!--月份-->
                         <div th:id="${year}" class="panel-collapse collapse out">
-                            <div class="panel-body" th:each="month:${articleInfoMap.get(year).keySet()}">
+                            <div class="panel-body">
                                 <!--月份展开,添加月份-->
-                                <div class="panel panel-default">
+                                <div class="panel panel-default" th:each="month:${articleInfoMap.get(year).keySet()}">
 
                                     <div class="panel-heading">
                                         <h5 class="panel-title">
-                                            <a data-toggle="collapse" th:href="'#'+${year}+${month}" th:text="${month}+'月'">
+                                            <a data-toggle="collapse"  th:href="'#'+${year}+${month}" th:text="${month}+'月'">
                                                 3月
                                             </a>
                                         </h5>
@@ -131,9 +131,9 @@
 
                                     <div th:id="${year}+''+${month}" class="panel-collapse collapse out">
                                         <div class="panel-body">
-                                            <ul class="list-unstyled" th:each="articleInfo:${articleInfoMap.get(year).get(month)}">
+                                            <ul class="list-unstyled">
                                                 <!--添加博客列表条目-->
-                                                <li><a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}">第一条博客</a></li>
+                                                <li th:each="articleInfo:${articleInfoMap.get(year).get(month)}"><a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}">第一条博客</a></li>
                                             </ul>
                                         </div>
                                     </div>
