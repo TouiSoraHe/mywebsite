@@ -214,8 +214,29 @@
         $(".ChangeBtnGroup").html(
             "<button type='button' class='btn btn-default' onclick='OnChange("+item.id+")'>修改博客</button>" +
             "<button type='button' class='btn btn-default' onclick='OnDelete("+item.id+")'>删除博客</button>"
-        )
+        );
+        //更新浏览器地址栏
+        var newUrl = 'http://'+window.location.host + '/Blog/'+item.id;
+        var data = new Object();
+        data.title = item.title;
+        data.time = FormatDateTime(item.time,"yyyy年MM月dd日 HH:mm:ss");
+        data.content = item.content;
+        window.history.pushState(data,null,newUrl);
     }
+
+    window.addEventListener("popstate",function (event) {
+        var data = event.state;
+        if(data == null){
+            $(".MyTitle h2").html('');
+            $(".MyTime p").html('');
+            $(".MyContent").html('');
+        }
+        else {
+            $(".MyTitle h2").html(data.title);
+            $(".MyTime p").html(data.time);
+            $(".MyContent").html(data.content);
+        }
+    });
 
     function GetArticle(articleID) {
         RequestAsyn('/Blog/'+articleID,'POST',success,$("#errorContent"),$("#errorModal"),null);
@@ -226,7 +247,9 @@
     }
 
     function OnDelete(articleID) {
-        window.location.href = "/Blog/Delete/"+articleID;
+        if(window.confirm('确认删除该博客？')){
+            window.location.href = "/Blog/Delete/"+articleID;
+        }
     }
 </script>
 
