@@ -154,7 +154,8 @@ public class BlogController {
     private HashMap<Integer,HashMap<Integer,List<ArticleInfo>>> GetArticleMap(List<ArticleInfo> articles)
     {
         HashMap<Integer,HashMap<Integer,List<ArticleInfo>>> articleMap = new HashMap<>();
-        for (ArticleInfo item:articles) {
+        for (int i = articles.size()-1;i>=0;i--){
+            ArticleInfo item = articles.get(i);
             Calendar calendar = new Calendar.Builder().setInstant(item.getTime()).build();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH)+1;
