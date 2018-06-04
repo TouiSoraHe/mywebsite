@@ -202,9 +202,11 @@
 
     function AddTag() {
         var tag = prompt("请输入需要添加的标签:");
-        $(".TagList").append(
-        "<span><span class='label label-info'>"+tag+"</span><span>&nbsp&nbsp</span></span>"
-        ).click(RemoveTag);
+        if(tag!=null && tag!=""){
+            $(".TagList").append(
+                "<span><span class='label label-info'>"+tag+"</span><span>&nbsp&nbsp</span></span>"
+            ).click(RemoveTag);
+        }
     }
 
     function RemoveTag(e) {
