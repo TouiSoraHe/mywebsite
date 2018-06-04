@@ -131,7 +131,7 @@
 
                                     <div th:id="${year}+''+${month}" class="panel-collapse collapse out">
                                         <div class="panel-body">
-                                            <ul class="list-unstyled">
+                                            <ul>
                                                 <!--添加博客列表条目-->
                                                 <li th:each="articleInfo:${articleInfoMap.get(year).get(month)}"><a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}">第一条博客</a></li>
                                             </ul>
@@ -145,7 +145,7 @@
 
                 </div>
             </div>
-            <div class="col-md-7 col-md-offset-2">
+            <div class="col-md-8 col-md-offset-2">
                 <div class="MyArticleArea">
                     <div class="MyTitle">
                         <h2 class="text-center">
@@ -159,13 +159,52 @@
                     </div>
                     <div class="MyContent">
                         <div th:if="${article}" th:utext="${article.getContent()}"></div>
+                        <div th:unless="${article}" th:if="${articleInfoListWithRecent}">
+                            <div th:if="${articleInfoListWithRecent.size()} eq 0">
+                                <H2>暂时没有博客</H2>
+                            </div>
+                            <div th:if="${articleInfoListWithRecent.size()} gt 0">
+                                <H2 th:utext="'最近的 '+ ${articleInfoListWithRecent.size()} +' 篇博客' "></H2>
+                                <HR>
+                                <ul>
+                                    <li th:each="articleInfo:${articleInfoListWithRecent}">
+                                        <a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}+' | ('+${articleInfo.GetFormatTime()}+')'">第一条博客</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-1 col-md-offset-1">
+            <div class="col-md-2">
                 <div class="btn-group-vertical ChangeBtnGroup" sec:authorize="isAuthenticated()">
                     <button type="button" class="btn btn-default" th:if="${article}" th:onclick="'OnChange('+${article.getId()}+')'">修改博客</button>
                     <button type="button" class="btn btn-default" th:if="${article}" th:onclick="'OnDelete('+${article.getId()}+')'">删除博客</button>
+                </div>
+                <div>
+                    <br>
+                </div>
+                <div class="panel-group" id="TagAccordion">
+                    <div class="panel panel-default" th:each="tag:${articleInfoWithTag.keySet()}">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#TagAccordion" th:href="'#'+${tag}" th:text="${tag}">
+                                    琐事
+                                </a>
+                            </h4>
+                        </div>
+                        <!--月份-->
+                        <div th:id="${tag}" class="panel-collapse collapse out">
+                            <div class="panel-body">
+                                <ul>
+                                    <li th:each="articleInfo:${articleInfoWithTag.get(tag)}">
+                                        <a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}">第一条博客</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -30,7 +30,10 @@ public class BlogController {
     @RequestMapping(method = RequestMethod.GET)
     public String BlogPage(Model model)
     {
-        model.addAttribute("articleInfoMap",GetArticleMap(articleInfoMapper.FindAll()));
+        List<ArticleInfo> articleInfoList = articleInfoMapper.FindAll();
+        model.addAttribute("articleInfoMap", GetArticleMapWithTime(articleInfoList));
+        model.addAttribute("articleInfoListWithRecent",articleInfoMapper.FindCountWithTimeDesc(20));
+        model.addAttribute("articleInfoWithTag",GetArticleMapWithTag(articleInfoList));
         return "Blog";
     }
 
@@ -56,8 +59,10 @@ public class BlogController {
         {
             throw new IllegalArgumentException("ArticleID不能为空");
         }
-        model.addAttribute("articleInfoMap",GetArticleMap(articleInfoMapper.FindAll()));
+        List<ArticleInfo> articleInfoList = articleInfoMapper.FindAll();
+        model.addAttribute("articleInfoMap", GetArticleMapWithTime(articleInfoList));
         model.addAttribute("article",articleMapper.Find(articleID));
+        model.addAttribute("articleInfoWithTag",GetArticleMapWithTag(articleInfoList));
         return "Blog";
     }
 
@@ -151,9 +156,14 @@ public class BlogController {
         return ResponseJson.CreateSuccess(String.valueOf(article.getId()));
     }
 
-    private HashMap<Integer,HashMap<Integer,List<ArticleInfo>>> GetArticleMap(List<ArticleInfo> articles)
+    /**
+     * 将博客列表按照时间分类放入到hashmap中
+     * @param articles
+     * @return
+     */
+    private HashMap<Integer,HashMap<Integer,List<ArticleInfo>>> GetArticleMapWithTime(List<ArticleInfo> articles)
     {
-        HashMap<Integer,HashMap<Integer,List<ArticleInfo>>> articleMap = new HashMap<>();
+        HashMap<Integer,HashMap<Integer,List<ArticleInfo>>> articleMap = new LinkedHashMap<>();
         for (int i = articles.size()-1;i>=0;i--){
             ArticleInfo item = articles.get(i);
             Calendar calendar = new Calendar.Builder().setInstant(item.getTime()).build();
@@ -168,6 +178,25 @@ public class BlogController {
             articleMap.get(year).get(month).add(item);
         }
         return articleMap;
+    }
+
+    /**
+     * 将博客列表按照标签分类放入到hashmap中
+     * @param articleInfoList
+     * @return
+     */
+    private HashMap<String,List<ArticleInfo>> GetArticleMapWithTag(List<ArticleInfo> articleInfoList) {
+        HashMap<String,List<ArticleInfo>> ret = new LinkedHashMap<>();
+        for (int i = articleInfoList.size()-1;i>=0;i--){
+            ArticleInfo item = articleInfoList.get(i);
+            for (String tag:GetTagList(item.getTag())){
+                if(!ret.containsKey(tag)){
+                    ret.put(tag,new ArrayList<>());
+                }
+                ret.get(tag).add(item);
+            }
+        }
+        return ret;
     }
 
     private List<String> GetTagList(String tagStr)

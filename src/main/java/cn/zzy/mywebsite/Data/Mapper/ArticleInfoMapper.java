@@ -27,4 +27,10 @@ public interface ArticleInfoMapper extends IMapperHandle<ArticleInfo> {
     @Override
     @Select("select * from articleinfo")
     List<ArticleInfo> FindAll();
+
+    @Select("select * from articleinfo order by time desc limit #{count}")
+    List<ArticleInfo> FindCountWithTimeDesc(int count);
+
+    @Select("select * from articleinfo limit #{count}")
+    List<ArticleInfo> FindCountWithTime(int count);
 }
