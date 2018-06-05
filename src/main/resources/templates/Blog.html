@@ -119,9 +119,9 @@
                         <div th:id="${year}" class="panel-collapse collapse out">
                             <div class="panel-body">
                                 <!--月份展开,添加月份-->
-                                <div class="panel panel-default" th:each="month:${articleInfoMap.get(year).keySet()}">
+                                <div class="panel panel-default" style="border: none" th:each="month:${articleInfoMap.get(year).keySet()}">
 
-                                    <div class="panel-heading">
+                                    <div class="panel-heading" style="border: 1px solid #ddd;margin-bottom: -1px;">
                                         <h5 class="panel-title">
                                             <a data-toggle="collapse"  th:href="'#'+${year}+${month}" th:text="${month}+'月'">
                                                 3月
@@ -130,10 +130,12 @@
                                     </div>
 
                                     <div th:id="${year}+''+${month}" class="panel-collapse collapse out">
-                                        <div class="panel-body">
-                                            <ul>
+                                        <div class="panel-body" style="padding: 0px">
+                                            <ul class="list-group">
                                                 <!--添加博客列表条目-->
-                                                <li th:each="articleInfo:${articleInfoMap.get(year).get(month)}"><a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}">第一条博客</a></li>
+                                                <li class="list-group-item" th:each="articleInfo:${articleInfoMap.get(year).get(month)}">
+                                                    <a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}">第一条博客</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -166,9 +168,13 @@
                             <div th:if="${articleInfoListWithRecent.size()} gt 0">
                                 <H2 th:utext="'最近的 '+ ${articleInfoListWithRecent.size()} +' 篇博客' "></H2>
                                 <HR>
-                                <ul>
-                                    <li th:each="articleInfo:${articleInfoListWithRecent}">
-                                        <a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'" th:utext="${articleInfo.getTitle()}+' | ('+${articleInfo.GetFormatTime()}+')'">第一条博客</a>
+                                <ul class="list-group" style="list-style: decimal inside">
+                                    <li class="list-group-item" style="display: list-item"  th:each="articleInfo:${articleInfoListWithRecent}">
+                                        <a href="javascript:void(0);" th:onclick="'GetArticle('+ ${articleInfo.getArticleID()} +')'">
+                                            <span  th:utext="${articleInfo.getTitle()}"></span>
+                                            <span class="pull-right text-right"  th:text="${articleInfo.GetFormatTime()}"></span>
+                                        </a>
+                                        <br>
                                     </li>
                                 </ul>
                             </div>
@@ -193,7 +199,6 @@
                                 </a>
                             </h4>
                         </div>
-                        <!--月份-->
                         <div th:id="${tag}" class="panel-collapse collapse out">
                             <div class="panel-body">
                                 <ul>
@@ -204,10 +209,11 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
+
+
     </div>
 </div>
 
