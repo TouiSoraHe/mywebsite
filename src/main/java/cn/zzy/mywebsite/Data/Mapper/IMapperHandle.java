@@ -1,8 +1,5 @@
 package cn.zzy.mywebsite.Data.Mapper;
 
-import cn.zzy.mywebsite.Data.Entity.Article;
-import org.apache.ibatis.annotations.*;
-
 import java.util.List;
 
 public interface IMapperHandle<T> {

@@ -47,7 +47,7 @@ public class BlogController {
         }
         Article article = articleMapper.Find(articleID);
         if(article == null){
-            throw new AssetNotFoundException("没有找到该博客");
+            throw new AssetNotFoundException("没有找到该博客,ArticleID:"+articleID);
         }
         return ResponseJson.CreateSuccess(article);
     }
