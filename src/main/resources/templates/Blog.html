@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>博客</title>
+    <title th:if="${article}" th:utext="${article.getTitle()}"></title>
+    <title th:unless="${article}">博客</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -264,8 +265,17 @@
 <script src="/nprogress/js/nprogress.js"></script>
 <script src="/js/MyJs.js"></script>
 <script>
+    //更新浏览器地址栏
+    var newUrl = 'http://'+window.location.host + '/Blog';
+    var data = new Object();
+    data.titleLabel = $('title').html();
+    data.title = $(".MyTitle h2").html();
+    data.time = $(".MyTime p").html();
+    data.content = $(".MyContent").html();
+    window.history.pushState(data,null,newUrl);
 
     function success(item) {
+        $("title").html(item.title);
         $(".MyTitle h2").html(item.title);
         $(".MyTime p").html(FormatDateTime(item.time,"yyyy年MM月dd日 HH:mm:ss"));
         $(".MyContent").html(item.content);
@@ -276,6 +286,7 @@
         //更新浏览器地址栏
         var newUrl = 'http://'+window.location.host + '/Blog/'+item.id;
         var data = new Object();
+        data.titleLabel = item.title;
         data.title = item.title;
         data.time = FormatDateTime(item.time,"yyyy年MM月dd日 HH:mm:ss");
         data.content = item.content;
@@ -285,11 +296,13 @@
     window.addEventListener("popstate",function (event) {
         var data = event.state;
         if(data == null){
+            $("title").html('博客');
             $(".MyTitle h2").html('');
             $(".MyTime p").html('');
             $(".MyContent").html('');
         }
         else {
+            $("title").html(data.titleLabel);
             $(".MyTitle h2").html(data.title);
             $(".MyTime p").html(data.time);
             $(".MyContent").html(data.content);
