@@ -31,6 +31,7 @@ public class AudioController {
         //文件目录
         File music = new File(database+"/"+songList+"/"+audioName);
         if(!music.exists()){
+            log.info(music.getAbsolutePath()+"不存在");
             throw new AssetNotFoundException("歌单:"+songList+" 歌曲名:"+audioName+" 未找到!");
         }
         String range=request.getHeader("Range");
