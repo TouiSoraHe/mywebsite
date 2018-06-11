@@ -112,32 +112,6 @@
     </div>
 </div>
 
-
-<!-- 错误模态框（Modal） -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"
-                        aria-hidden="true">×
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    服务器开了一点小差
-                </h4>
-            </div>
-            <div class="modal-body">
-                <div id="errorContent"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default"
-                        data-dismiss="modal">关闭
-                </button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
 </div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -145,7 +119,6 @@
 <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/wangEditor.js"></script>
-<script src="/nprogress/js/nprogress.js"></script>
 <script src="/js/MyJs.js"></script>
 <script>
     var E = window.wangEditor;
@@ -156,11 +129,6 @@
 
     function success(text) {
         window.location.href="/Blog/"+text;
-    }
-
-    function fail(code,message) {
-        $("#errorContent").html("错误代码:"+code+((message==null || message=="")?"":"<br>错误信息:"+message));
-        $("#errorModal").modal('show');
     }
 
     function OnSave() {
@@ -189,7 +157,7 @@
         form.append("title",titleText);
         form.append("content",contentText);
         form.append("tag",tag);
-        RequestAsyn('/Blog/AddBlog','POST',success,$("#errorContent"),$("#errorModal"),form);
+        RequestAsyn('/Blog/AddBlog','POST',success,form);
     }
     
     function OnCancel() {

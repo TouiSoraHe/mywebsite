@@ -20,14 +20,15 @@
     <![endif]-->
 
     <style>
-        body{
+        body {
             padding-top: 70px;
         }
-        .w-e-text-container{
+
+        .w-e-text-container {
             height: 600px !important;
         }
 
-        .TagList{
+        .TagList {
             cursor: pointer;
         }
     </style>
@@ -46,7 +47,8 @@
                 </button>
                 <a class="navbar-brand" href="/">首页</a>
             </div>
-            <div class="collapse navbar-collapse navbar-right" id="navbar-collapse" style="margin-right: 0px;padding-right: 0px">
+            <div class="collapse navbar-collapse navbar-right" id="navbar-collapse"
+                 style="margin-right: 0px;padding-right: 0px">
                 <ul class="nav navbar-nav">
                     <li class="dropdown" sec:authorize="isAuthenticated()">
                         <a href="/Blog" class="dropdown-toggle" data-toggle="dropdown">
@@ -88,7 +90,8 @@
             <div class="col-lg-3"></div>
             <div class="col-lg-6">
                 <div class="MyArticleArea" th:if="${article}">
-                    <input type="text" id="titleInput" class="form-control input-lg-6" placeholder="标题..." th:value="${article.getTitle()}">
+                    <input type="text" id="titleInput" class="form-control input-lg-6" placeholder="标题..."
+                           th:value="${article.getTitle()}">
                     <br>
                     <div class="ArticleTag">
                         <span class="TagList">
@@ -109,7 +112,8 @@
                 </div>
                 <div><br></div>
                 <div class="btn-group" th:if="${article}">
-                    <button type="button" class="btn btn-default" th:onclick="'OnSave('+${article.getId()}+')'">保存</button>
+                    <button type="button" class="btn btn-default" th:onclick="'OnSave('+${article.getId()}+')'">保存
+                    </button>
                     <button type="button" class="btn btn-default" onclick="OnCancel()">取消</button>
                     <button type="button" class="btn btn-default" onclick="OnReset()">清空</button>
                 </div>
@@ -120,87 +124,59 @@
     </div>
 </div>
 
-
-<!-- 错误模态框（Modal） -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"
-                        aria-hidden="true">×
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    服务器开了一点小差
-                </h4>
-            </div>
-            <div class="modal-body">
-                <div id="errorContent"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default"
-                        data-dismiss="modal">关闭
-                </button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 </div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/wangEditor.js"></script>
-<script src="/nprogress/js/nprogress.js"></script>
 <script src="/js/MyJs.js"></script>
 <script>
     var E = window.wangEditor;
     var content = new E('#contentEditor');
-    content.customConfig.uploadImgShowBase64 = true ;
+    content.customConfig.uploadImgShowBase64 = true;
     content.customConfig.zIndex = 0;
     content.create();
 
     $(".MyContent").parent().html($(".MyContent").html());
 
     function success(text) {
-        window.location.href="/Blog/"+text;
+        window.location.href = "/Blog/" + text;
     }
 
     function OnSave(articleID) {
         var titleText = $("#titleInput").val();
         var contentText = content.txt.html();
-        if(titleText==null || titleText=="")
-        {
+        if (titleText == null || titleText == "") {
             alert("标题不能为空");
             return;
         }
-        if(contentText==null || contentText=="")
-        {
+        if (contentText == null || contentText == "") {
             alert("内容不能为空");
             return;
         }
         var tag = "";
         var count = 0;
-        for(var item of $(".TagList").children())
-        {
-            if(count!=0)
-            {
-                tag+="|";
+        for (var item of $(".TagList").children()) {
+            if (count != 0) {
+                tag += "|";
             }
             tag += $(item).children(".label").text();
             count++;
         }
         var form = new FormData();
-        form.append("title",titleText);
-        form.append("content",contentText);
-        form.append("id",articleID);
-        form.append("tag",tag);
-        RequestAsyn("/Blog/Update",'POST',success,$("#errorContent"),$("#errorModal"),form);
+        form.append("title", titleText);
+        form.append("content", contentText);
+        form.append("id", articleID);
+        form.append("tag", tag);
+        RequestAsyn("/Blog/Update", 'POST', success,form);
     }
 
     function OnCancel() {
-        window.location.href= "/Blog";
+        window.location.href = "/Blog";
     }
 
     function OnReset() {
@@ -209,9 +185,9 @@
 
     function AddTag() {
         var tag = prompt("请输入需要添加的标签:");
-        if(tag!=null && tag!=""){
+        if (tag != null && tag != "") {
             $(".TagList").append(
-                "<span><span class='label label-info'>"+tag+"</span><span>&nbsp&nbsp</span></span>"
+                "<span><span class='label label-info'>" + tag + "</span><span>&nbsp&nbsp</span></span>"
             ).click(RemoveTag);
         }
     }
