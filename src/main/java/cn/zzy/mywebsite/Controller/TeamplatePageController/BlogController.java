@@ -7,13 +7,13 @@ import cn.zzy.mywebsite.Data.Mapper.ArticleMapper;
 import cn.zzy.mywebsite.Data.ResponseJson;
 import cn.zzy.mywebsite.Exception.AssetNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
@@ -38,8 +38,7 @@ public class BlogController {
     }
 
     @RequestMapping(value = "/{ArticleID}",method = RequestMethod.POST)
-    @ResponseBody()
-    public ResponseJson GetArticle(@PathVariable("ArticleID")Integer articleID)
+    public ResponseEntity GetArticle(@PathVariable("ArticleID")Integer articleID)
     {
         if(articleID == null)
         {
@@ -49,7 +48,7 @@ public class BlogController {
         if(article == null){
             throw new AssetNotFoundException("没有找到该博客,ArticleID:"+articleID);
         }
-        return ResponseJson.CreateSuccess(article);
+        return ResponseEntity.ok(ResponseJson.CreateSuccess(article));
     }
 
     @RequestMapping(value = "/{ArticleID}",method = RequestMethod.GET)
@@ -59,9 +58,13 @@ public class BlogController {
         {
             throw new IllegalArgumentException("ArticleID不能为空");
         }
+        Article article = articleMapper.Find(articleID);
+        if(article == null){
+            throw new AssetNotFoundException("没有找到该博客,ArticleID:"+articleID);
+        }
         List<ArticleInfo> articleInfoList = articleInfoMapper.FindAll();
         model.addAttribute("articleInfoMap", GetArticleMapWithTime(articleInfoList));
-        model.addAttribute("article",articleMapper.Find(articleID));
+        model.addAttribute("article",article);
         model.addAttribute("articleInfoWithTag",GetArticleMapWithTag(articleInfoList));
         return "Blog";
     }
@@ -74,9 +77,8 @@ public class BlogController {
     }
 
     @RequestMapping(value = "/AddBlog",method = RequestMethod.POST)
-    @ResponseBody()
     @PreAuthorize("isAuthenticated()")
-    public ResponseJson AddArticle(Article article)
+    public ResponseEntity AddArticle(Article article)
     {
         if(article == null)
         {
@@ -93,7 +95,7 @@ public class BlogController {
         articleMapper.Add(article);
         articleInfo.setArticleID(article.getId());
         articleInfoMapper.Update(articleInfo);
-        return ResponseJson.CreateSuccess(String.valueOf(article.getId()));
+        return ResponseEntity.ok(ResponseJson.CreateSuccess(String.valueOf(article.getId())));
     }
 
 
@@ -123,14 +125,15 @@ public class BlogController {
         {
             model.addAttribute("article",article);
             model.addAttribute("tagList",GetTagList(article.getTag()));
+        }else{
+            throw new AssetNotFoundException("没有找到该博客,ArticleID:"+articleID);
         }
         return "UpdateBlog";
     }
 
     @RequestMapping(value = "/Update",method = RequestMethod.POST)
-    @ResponseBody()
     @PreAuthorize("isAuthenticated()")
-    public ResponseJson UpdateArticle(Article article)
+    public ResponseEntity UpdateArticle(Article article)
     {
         if(article==null)
         {
@@ -153,7 +156,7 @@ public class BlogController {
         articleInfo.setTitle(article.getTitle());
         articleInfo.setTag(article.getTag());
         articleInfoMapper.Update(articleInfo);
-        return ResponseJson.CreateSuccess(String.valueOf(article.getId()));
+        return ResponseEntity.ok(ResponseJson.CreateSuccess(String.valueOf(article.getId())));
     }
 
     /**
