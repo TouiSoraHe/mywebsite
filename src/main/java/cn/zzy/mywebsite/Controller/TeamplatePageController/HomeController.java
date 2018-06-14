@@ -14,8 +14,7 @@ public class HomeController {
     private BlogController blogController;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String HomePage(Model model)
-    {
+    public String HomePage(Model model) {
         return blogController.BlogPage(model);
     }
 }
