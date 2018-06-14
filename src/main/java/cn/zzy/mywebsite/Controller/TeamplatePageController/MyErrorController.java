@@ -1,12 +1,13 @@
 package cn.zzy.mywebsite.Controller.TeamplatePageController;
 
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/Error")
-public class ErrorController {
+@RequestMapping(value = {"/Error","/error"})
+public class MyErrorController implements ErrorController {
 
     @RequestMapping
     public String ErrorPage(Model model,String errorMessage, String code)
@@ -19,6 +20,11 @@ public class ErrorController {
         }
         model.addAttribute("errorMessage",errorMessage);
         model.addAttribute("code",code);
-        return "Error";
+        return "error";
+    }
+
+    @Override
+    public String getErrorPath() {
+        return "/error";
     }
 }
