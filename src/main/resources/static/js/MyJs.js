@@ -43,7 +43,13 @@ function RequestAsyn(url, method, successEvent, form) {
 }
 
 function fail(code, message) {
-    SimpleModal("服务器开了一点小差", "<div>错误代码:" + code + ((message == null || message == "") ? "" : "<br>错误信息:" + message) + "</div>");
+    if(code === null || code === "" || code === undefined){
+        code = 10086;
+    }
+    if(message === null || message === "" || message === undefined){
+        message = "未知错误";
+    }
+    SimpleModal("服务器开了一点小差", '<div>错误代码:'+code+'<br>错误信息:'+message+'</div>');
 }
 
 /**
@@ -100,3 +106,67 @@ function SimpleModal(title, content, okEvent) {
     });
     modal.modal('show');
 }
+
+$('body').append('<div id="DragAndDropBox" style="position:fixed;left: 0px;top: 30%;z-index: 100000;"></div>');
+var oDiv=document.getElementById('DragAndDropBox');
+oDiv.onmousedown=function(ev){
+    var disX=ev.clientX-oDiv.offsetLeft;
+    var disY=ev.clientY-oDiv.offsetTop;
+    document.onmousemove=function(ev){
+        var l=ev.clientX-disX;
+        var t=ev.clientY-disY;
+
+        oDiv.style.left=l+'px';
+        oDiv.style.top=t+'px';
+    };
+    document.onmouseup=function(){
+        document.onmousemove=null;
+        document.onmouseup=null
+    }
+};
+
+$('body').append('<script src="/skPlayer-3.0/dist/skPlayer.min.js"></script>');
+var mp3Player = new Mp3Player();
+
+function Mp3Player() {
+    this.player = null;
+}
+
+Mp3Player.prototype.open = function (songListName) {
+    this.close();
+    var that = this;
+    RequestAsyn("/Audio/"+songListName,"POST",function (data) {
+        $("#DragAndDropBox").append('<div id="skPlayerHidden" class="text-center" style="width: 50px;background-color: #d94240;color: white;cursor: pointer;">◁</div>');
+        $("#skPlayerHidden").on('click',function () {
+            var isHidden = $("#skPlayer").attr("hidden") !== undefined;
+            if(isHidden){
+                $("#skPlayer").attr("hidden",false);
+                $("#skPlayerHidden").text('◁');
+            }else{
+                $("#skPlayerHidden").text('▷');
+                $("#skPlayer").attr("hidden",true);
+                $("#DragAndDropBox").css("left","0px");
+            }
+        });
+        $("#DragAndDropBox").append('<div id="skPlayer"></div>');
+        that.player = new skPlayer({
+            music: {
+                type: 'file',
+                source:data.source
+            }
+        });
+    },null);
+};
+Mp3Player.prototype.close = function () {
+    if(this.player!=null){
+        this.player.destroy();
+    }
+    var skPlayer = $("#skPlayer");
+    if(skPlayer!=null){
+        skPlayer.remove();
+    }
+    var skPlayerHidden = $("#skPlayerHidden");
+    if(skPlayerHidden!=null){
+        skPlayerHidden.remove();
+    }
+};

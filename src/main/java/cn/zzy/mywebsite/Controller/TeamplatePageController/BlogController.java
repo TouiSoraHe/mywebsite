@@ -1,5 +1,6 @@
 package cn.zzy.mywebsite.Controller.TeamplatePageController;
 
+import cn.zzy.mywebsite.Controller.AudioController;
 import cn.zzy.mywebsite.Data.Entity.Article;
 import cn.zzy.mywebsite.Data.Entity.ArticleInfo;
 import cn.zzy.mywebsite.Data.Mapper.ArticleInfoMapper;
@@ -34,6 +35,7 @@ public class BlogController {
         model.addAttribute("articleInfoMap", GetArticleMapWithTime(articleInfoList));
         model.addAttribute("articleInfoListWithRecent",articleInfoMapper.FindCountWithTimeDesc(20));
         model.addAttribute("articleInfoWithTag",GetArticleMapWithTag(articleInfoList));
+        model.addAttribute("songList", AudioController.GetAllSongList());
         return "Blog";
     }
 
@@ -66,13 +68,15 @@ public class BlogController {
         model.addAttribute("articleInfoMap", GetArticleMapWithTime(articleInfoList));
         model.addAttribute("article",article);
         model.addAttribute("articleInfoWithTag",GetArticleMapWithTag(articleInfoList));
+        model.addAttribute("songList", AudioController.GetAllSongList());
         return "Blog";
     }
 
     @RequestMapping(value = "/AddBlog",method = RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
-    public String AddArticle()
+    public String AddArticle(Model model)
     {
+        model.addAttribute("songList", AudioController.GetAllSongList());
         return "AddBlog";
     }
 
@@ -109,6 +113,7 @@ public class BlogController {
         }
         articleMapper.Delete(articleID);
         articleInfoMapper.Delete(articleID);
+        model.addAttribute("songList", AudioController.GetAllSongList());
         return BlogPage(model);
     }
 

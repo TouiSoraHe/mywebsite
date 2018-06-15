@@ -1,9 +1,16 @@
 package cn.zzy.mywebsite.Controller;
 
+import cn.zzy.mywebsite.Data.ResponseJson;
+import cn.zzy.mywebsite.Data.Song;
+import cn.zzy.mywebsite.Data.SongList;
 import cn.zzy.mywebsite.Exception.AssetNotFoundException;
 import cn.zzy.mywebsite.Tools.GlobalVariables;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +22,11 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
+
+import static cn.zzy.mywebsite.Tools.Util.DownloadFile;
+import static cn.zzy.mywebsite.Tools.Util.GetDomainWithPort;
 
 /**
  * Created by Shmily on 2018/1/3.
@@ -23,18 +35,18 @@ import java.io.RandomAccessFile;
 @Slf4j
 @RequestMapping("/Audio")
 public class AudioController {
-    private String database = GlobalVariables.AudioRootPath;
+    private static String database = GlobalVariables.AudioRootPath;
 
     @RequestMapping("/{songList}/{audioName}")
     @ResponseBody
-    public void audioStream(HttpServletRequest request, HttpServletResponse response, @PathVariable String songList, @PathVariable String audioName){
+    public void audioStream(HttpServletRequest request, HttpServletResponse response, @PathVariable String songList, @PathVariable String audioName) {
         //文件目录
-        File music = new File(database+"/"+songList+"/"+audioName);
-        if(!music.exists()){
-            log.info(music.getAbsolutePath()+"不存在");
-            throw new AssetNotFoundException("歌单:"+songList+" 歌曲名:"+audioName+" 未找到!");
+        File music = new File(database + "/" + songList + "/" + audioName);
+        if (!music.exists()) {
+            log.info(music.getAbsolutePath() + "不存在");
+            throw new AssetNotFoundException("歌单:" + songList + " 歌曲名:" + audioName + " 未找到!");
         }
-        String range=request.getHeader("Range");
+        String range = request.getHeader("Range");
 
         //开始下载位置
         long startByte = 0;
@@ -130,7 +142,7 @@ public class AudioController {
             //捕获此异常表示拥护停止下载
         } catch (IOException e) {
             e.printStackTrace();
-        }  finally {
+        } finally {
             try {
                 if (randomAccessFile != null) {
                     randomAccessFile.close();
@@ -139,5 +151,46 @@ public class AudioController {
                 e.printStackTrace();
             }
         }
+    }
+
+    @RequestMapping("/{songList}/{audioName}/cover")
+    public ResponseEntity audioStream(@PathVariable String songList, @PathVariable String audioName) throws IOException {
+        String filePath = database + "/" + songList + "/" + audioName+".cover";
+        return DownloadFile(filePath);
+    }
+
+    @Autowired
+    private HttpServletRequest request;
+    @RequestMapping(value = "/{songList}")
+    public ResponseEntity GetSongList(@PathVariable String songList) throws InvalidDataException, IOException, UnsupportedTagException {
+        File songListFile = new File(database + "/"+songList);
+        SongList list = new SongList();
+        if(songListFile.exists()){
+            for (File songFile:songListFile.listFiles()){
+                if(songFile.isFile() && songFile.getName().lastIndexOf(".mp3") == songFile.getName().length()-4){
+                    String url = GetDomainWithPort(request);
+                    String cover = url + "/Audio/"+songList+"/"+songFile.getName()+"/cover";
+                    String src = url+ "/Audio/"+songList+"/"+songFile.getName();
+                    Song song = new Song(songFile,src,cover);
+                    list.source.add(song);
+                }
+            }
+        }else{
+            throw  new AssetNotFoundException("未找到歌单:"+songList);
+        }
+        return  ResponseEntity.ok(ResponseJson.CreateSuccess(list));
+    }
+
+    public static List<String> GetAllSongList() {
+        List<String> ret = new ArrayList<>();
+        File audioFile = new File(database);
+        if(audioFile.exists()){
+            for (File songList:audioFile.listFiles()){
+                if(songList.isDirectory()){
+                    ret.add(songList.getName());
+                }
+            }
+        }
+        return ret;
     }
 }
