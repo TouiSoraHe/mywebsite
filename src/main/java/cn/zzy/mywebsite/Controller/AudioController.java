@@ -1,7 +1,6 @@
 package cn.zzy.mywebsite.Controller;
 
 import cn.zzy.mywebsite.Data.ResponseJson;
-import cn.zzy.mywebsite.Data.Song;
 import cn.zzy.mywebsite.Data.SongList;
 import cn.zzy.mywebsite.Exception.AssetNotFoundException;
 import cn.zzy.mywebsite.Tools.GlobalVariables;
@@ -9,7 +8,6 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,11 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cn.zzy.mywebsite.Tools.Util.DownloadFile;
-import static cn.zzy.mywebsite.Tools.Util.GetDomainWithPort;
 
-/**
- * Created by Shmily on 2018/1/3.
- */
 @Controller
 @Slf4j
 @RequestMapping("/Audio")
@@ -159,26 +153,9 @@ public class AudioController {
         return DownloadFile(filePath);
     }
 
-    @Autowired
-    private HttpServletRequest request;
     @RequestMapping(value = "/{songList}")
     public ResponseEntity GetSongList(@PathVariable String songList) throws InvalidDataException, IOException, UnsupportedTagException {
-        File songListFile = new File(database + "/"+songList);
-        SongList list = new SongList();
-        if(songListFile.exists()){
-            for (File songFile:songListFile.listFiles()){
-                if(songFile.isFile() && songFile.getName().lastIndexOf(".mp3") == songFile.getName().length()-4){
-                    String url = GetDomainWithPort(request);
-                    String cover = url + "/Audio/"+songList+"/"+songFile.getName()+"/cover";
-                    String src = url+ "/Audio/"+songList+"/"+songFile.getName();
-                    Song song = new Song(songFile,src,cover);
-                    list.source.add(song);
-                }
-            }
-        }else{
-            throw  new AssetNotFoundException("未找到歌单:"+songList);
-        }
-        return  ResponseEntity.ok(ResponseJson.CreateSuccess(list));
+        return  ResponseEntity.ok(ResponseJson.CreateSuccess(SongList.GetSongList(songList)));
     }
 
     public static List<String> GetAllSongList() {

@@ -1,5 +1,6 @@
 package cn.zzy.mywebsite.Data;
 
+import cn.zzy.mywebsite.Tools.Util;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
@@ -30,8 +31,15 @@ public class Song{
         File coverFile = new File(file.getAbsolutePath()+".cover");
         if(!coverFile.exists()){
             try(FileOutputStream fileOutputStream = new FileOutputStream(coverFile)) {
-                fileOutputStream.write(id3v2.getAlbumImage());
+                byte[] img = id3v2.getAlbumImage();
+                fileOutputStream.write(img==null?new byte[0]:img);
             }
+        }
+        if(author == null || "".equals(author)){
+            author = "未知";
+        }
+        if(name == null || "".equals(name)){
+            name = Util.GetFileNameWithoutExtension(file.getName());
         }
         this.src =src;
         this.cover = cover;
