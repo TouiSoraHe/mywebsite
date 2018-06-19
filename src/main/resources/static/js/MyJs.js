@@ -12,7 +12,11 @@ function FormatDateTime(time, regex) {
         .replace("hh", h > 12 ? h % 12 : h).replace("HH", h).replace("mm", m).replace("ss", s).replace("mi", mi);
 };
 
-$('body').append('<script src="/nprogress/js/nprogress.js"></script>');
+if(typeof (NProgress) === "undefined"){
+    console.log("引入NProgress");
+    $('body').append('<script src="/nprogress/js/nprogress.js"></script>');
+}
+
 NProgress.configure({minimum: 0.4});
 
 function RequestAsyn(url, method, successEvent, form) {
@@ -125,7 +129,10 @@ oDiv.onmousedown=function(ev){
     }
 };
 
-$('body').append('<script src="/skPlayer-3.0/dist/skPlayer.min.js"></script>');
+if(typeof skPlayer === 'undefined'){
+    console.log('引入skPlayer');
+    $('body').append('<script src="/skPlayer-3.0/dist/skPlayer.min.js"></script>');
+}
 var mp3Player = new Mp3Player();
 
 function Mp3Player() {
