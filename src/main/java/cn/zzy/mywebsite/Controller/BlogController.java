@@ -1,4 +1,4 @@
-package cn.zzy.mywebsite.Controller.TeamplatePageController;
+package cn.zzy.mywebsite.Controller;
 
 import cn.zzy.mywebsite.Controller.AudioController;
 import cn.zzy.mywebsite.Data.Entity.Article;

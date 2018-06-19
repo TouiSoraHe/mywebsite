@@ -1,4 +1,4 @@
-package cn.zzy.mywebsite.Controller.TeamplatePageController;
+package cn.zzy.mywebsite.Controller;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;

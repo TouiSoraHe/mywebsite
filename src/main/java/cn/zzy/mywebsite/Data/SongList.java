@@ -39,11 +39,11 @@ public class SongList {
                 //如果不一致则重新生成
                 if (count != list.source.size()) {
                     list = CreateSongList(songListFile);
-                    WriteToFile(list,songListJsonFile);
+                    WriteToFile(list, songListJsonFile);
                 }
             } else {
                 list = CreateSongList(songListFile);
-                WriteToFile(list,songListJsonFile);
+                WriteToFile(list, songListJsonFile);
             }
         } else {
             throw new AssetNotFoundException("未找到歌单:" + songListName);
