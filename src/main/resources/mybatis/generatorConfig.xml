@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <context id="DB2Tables" targetRuntime="MyBatis3Simple">
+        <!--生成的java文件的编码-->
+        <property name="javaFileEncoding" value="utf-8"/>
+
+        <!--生成java注释,true代表不生成-->
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--jdbc连接属性-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/mywebsite?characterEncoding=utf-8"
+                        userId="root"
+                        password="123789">
+        </jdbcConnection>
+
+        <!--<javaTypeResolver>元素用于定义Java类型解析器的属性。Java Type Resolver用于根据数据库列信息计算Java类型。
+        如果可能的话，默认的Java Type Resolver尝试通过替换Integral类型来使JDBC DECIMAL和NUMERIC类型更易于使用
+        （Long，Integer，Short等）-->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!--生成的pojo类存放的位置-->
+        <javaModelGenerator targetPackage="cn.zzy.Test.Entity" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!--Java客户端生成器的属性,ANNOTATEDMAPPER代表以注解形式生成-->
+        <javaClientGenerator type="ANNOTATEDMAPPER" targetPackage="cn.zzy.Test.Mapper"  targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!--需要生成的表,table标签可以存在多个-->
+        <table tableName="test_table"
+               enableSelectByExample="false" enableDeleteByExample="false" enableCountByExample="false" enableUpdateByExample="false">
+            <property name="useActualColumnNames" value="true"/>
+            <!--该元素可以实现主键的自增:@Options(useGeneratedKeys=true,keyProperty="id")-->
+            <generatedKey column="ID" sqlStatement="JDBC" identity="true" />
+        </table>
+
+    </context>
+</generatorConfiguration>
